@@ -176,10 +176,14 @@
         </Component>
         <Component class="javax.swing.JTextField" name="firstNameTextField">
           <Events>
+            <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="firstNameFocusLost"/>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="firstNameTextFieldActionPerformed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JTextField" name="lastNameTextField">
+          <Events>
+            <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="lastNameFocusLost"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JTextField" name="ageTextField">
           <Events>

@@ -63,9 +63,20 @@ public class MainFrame extends javax.swing.JFrame {
 
         messageLabel.setText("Message");
 
+        firstNameTextField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                firstNameFocusLost(evt);
+            }
+        });
         firstNameTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 firstNameTextFieldActionPerformed(evt);
+            }
+        });
+
+        lastNameTextField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                lastNameFocusLost(evt);
             }
         });
 
@@ -195,18 +206,20 @@ public class MainFrame extends javax.swing.JFrame {
         String email = emailTextField.getText();
         String message = messageTextArea.getText(); 
         
-        if (firstName.isEmpty() || lastName.isEmpty() || ageText.isEmpty() || email.isEmpty() || message.isEmpty()) {
+        if (ageText.isEmpty() || email.isEmpty() || message.isEmpty()) {
         JOptionPane.showMessageDialog(this, "Please fill in all required fields.", "Incomplete Form", JOptionPane.ERROR_MESSAGE);
         return;
         }
-        
-        String userData = "First Name: " + firstName + "\n"
+        else{
+            String userData = "First Name: " + firstName + "\n"
                         + "Last Name: " + lastName + "\n"
                         + "Age: " + ageText + "\n"
                         + "Email: " + email + "\n"
                         + "Message: " + message;
         
         JOptionPane.showMessageDialog(this, userData, "Registration Data", JOptionPane.INFORMATION_MESSAGE);
+        }
+        
     }//GEN-LAST:event_submitButtonActionPerformed
 
     private void ageTextFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_ageTextFieldFocusLost
@@ -226,14 +239,41 @@ public class MainFrame extends javax.swing.JFrame {
         emailTextField.requestFocus();
        }
     }//GEN-LAST:event_emailTextFieldFocusLost
+
+    private void firstNameFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_firstNameFocusLost
+        // TODO add your handling code here:
+        String firstName = firstNameTextField.getText();
+        if(!isValidName(firstName)){
+            JOptionPane.showMessageDialog(this, "Please enter a valid first name", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+        firstNameTextField.requestFocus();
+        }
+    }//GEN-LAST:event_firstNameFocusLost
+
+    private void lastNameFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_lastNameFocusLost
+        // TODO add your handling code here:
+        String lastName = lastNameTextField.getText();
+        if(!isValidName(lastName)){
+            JOptionPane.showMessageDialog(this, "Please enter a valid last name", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+        lastNameTextField.requestFocus();
+        }
+    }//GEN-LAST:event_lastNameFocusLost
+    
+    private boolean isValidName(String name){
+        return name.matches("^[A-Za-z]*$");
+    }
     
     private boolean isValidEmail(String email) {
-    // Regular expression for basic email validation
+    if (email == null || email.trim().isEmpty()) {
+        return true; 
+    }
     String regex = "^[A-Za-z0-9+_.-]+@(.+)$";
     return email.matches(regex);
     }
     
     private boolean isValidInteger(String input) {
+        if (input == null || input.trim().isEmpty()) {
+        return true; 
+    }
     try {
         if(!input.isEmpty()){
           Integer.parseInt(input);
