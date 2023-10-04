@@ -4,6 +4,10 @@
  */
 package ui;
 
+import java.io.File;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 /**
@@ -11,6 +15,8 @@ import javax.swing.JOptionPane;
  * @author sakshitiwari
  */
 public class MainFrame extends javax.swing.JFrame {
+    
+     private String uploadedPhotoPath;
 
     /**
      * Creates new form MainFrame
@@ -97,6 +103,11 @@ public class MainFrame extends javax.swing.JFrame {
         messagePanel.setViewportView(messageTextArea);
 
         photoButton.setText("Upload photo");
+        photoButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                photoButtonActionPerformed(evt);
+            }
+        });
 
         submitButton.setText("Submit");
         submitButton.addActionListener(new java.awt.event.ActionListener() {
@@ -141,7 +152,7 @@ public class MainFrame extends javax.swing.JFrame {
                                         .addComponent(ageTextField)
                                         .addComponent(lastNameTextField)
                                         .addComponent(firstNameTextField)))))))
-                .addContainerGap(156, Short.MAX_VALUE))
+                .addContainerGap(150, Short.MAX_VALUE))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -201,25 +212,34 @@ public class MainFrame extends javax.swing.JFrame {
         //System.out.println("hello");
         String firstName = firstNameTextField.getText();
         String lastName = lastNameTextField.getText();
-        String ageText = ageTextField.getText();
-        //Integer age = Integer.parseInt(ageText); 
+        String ageText = ageTextField.getText(); 
         String email = emailTextField.getText();
         String message = messageTextArea.getText(); 
         
-        if (ageText.isEmpty() || email.isEmpty() || message.isEmpty()) {
+        if (firstName.isEmpty() || lastName.isEmpty() || ageText.isEmpty() || email.isEmpty() || message.isEmpty()) {
         JOptionPane.showMessageDialog(this, "Please fill in all required fields.", "Incomplete Form", JOptionPane.ERROR_MESSAGE);
         return;
         }
-        else{
-            String userData = "First Name: " + firstName + "\n"
+        
+        int maxLength = 100;
+        if (message.length() > maxLength) {
+        JOptionPane.showMessageDialog(this, "Message must not exceed 100 characters.", "Invalid Message", JOptionPane.ERROR_MESSAGE);
+        return; 
+    }
+        
+        String userData = "First Name: " + firstName + "\n"
                         + "Last Name: " + lastName + "\n"
                         + "Age: " + ageText + "\n"
                         + "Email: " + email + "\n"
                         + "Message: " + message;
         
-        JOptionPane.showMessageDialog(this, userData, "Registration Data", JOptionPane.INFORMATION_MESSAGE);
-        }
-        
+       if (uploadedPhotoPath != null) {
+           ImageIcon imageIcon = new ImageIcon(uploadedPhotoPath);
+           JOptionPane.showMessageDialog(this, new Object[] { userData, new JLabel(imageIcon) }, "Registration Data", JOptionPane.INFORMATION_MESSAGE);
+       } else {
+             JOptionPane.showMessageDialog(this, userData, "Registration Data", JOptionPane.INFORMATION_MESSAGE);
+              }
+    
     }//GEN-LAST:event_submitButtonActionPerformed
 
     private void ageTextFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_ageTextFieldFocusLost
@@ -257,34 +277,59 @@ public class MainFrame extends javax.swing.JFrame {
         lastNameTextField.requestFocus();
         }
     }//GEN-LAST:event_lastNameFocusLost
+
+    private void photoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_photoButtonActionPerformed
+        // TODO add your handling code here:
+        
+    JFileChooser fileChooser = new JFileChooser();
+    int result = fileChooser.showOpenDialog(this);
+
+    if (result == JFileChooser.APPROVE_OPTION) {
+        File selectedFile = fileChooser.getSelectedFile();
+        uploadedPhotoPath = selectedFile.getAbsolutePath();
+        ImageIcon imageIcon = new ImageIcon(uploadedPhotoPath);
+        JOptionPane.showMessageDialog(
+                this,
+                new JLabel("", imageIcon, JLabel.CENTER),
+                "Uploaded Photo",
+                JOptionPane.PLAIN_MESSAGE
+        );
+    }
+    }//GEN-LAST:event_photoButtonActionPerformed
+    
+    public String getUploadedPhotoPath() {
+        return uploadedPhotoPath;
+    }
     
     private boolean isValidName(String name){
         return name.matches("^[A-Za-z]*$");
     }
     
     private boolean isValidEmail(String email) {
-    if (email == null || email.trim().isEmpty()) {
+        if (email == null || email.trim().isEmpty()) {
         return true; 
-    }
-    String regex = "^[A-Za-z0-9+_.-]+@(.+)$";
-    return email.matches(regex);
+         }
+        String regex = "^[A-Za-z0-9+_.-]+@(.+)$";
+        return email.matches(regex);
     }
     
     private boolean isValidInteger(String input) {
-        if (input == null || input.trim().isEmpty()) {
-        return true; 
+    if (input == null || input.trim().isEmpty()) {
+        return true;
     }
+
     try {
-        if(!input.isEmpty()){
-          Integer.parseInt(input);
-        return true;  
+        int value = Integer.parseInt(input);
+        if (value >= 0) {
+            return true; 
+        } else {
+            return false; 
         }
-        return false;
-    } 
-    catch (NumberFormatException e) {
-        return false;
+    } catch (NumberFormatException e) {
+        return false; 
     }
-}
+    }
+
     /**
      * @param args the command line arguments
      */
